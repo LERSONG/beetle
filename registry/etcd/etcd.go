@@ -17,7 +17,8 @@ import (
 )
 
 var (
-	Prefix = "%s_%s"
+	Prefix             = "%s_%s"
+	DefaultServiceAddr = ":9999"
 )
 
 type etcdRegistry struct {
@@ -54,7 +55,7 @@ func configure(e *etcdRegistry, opts ...registry.Option) error {
 	}
 
 	if e.options.ServiceAddr == "" {
-		e.options.ServiceAddr = ":9999"
+		e.options.ServiceAddr = DefaultServiceAddr
 	}
 
 	if e.options.Timeout == 0 {
