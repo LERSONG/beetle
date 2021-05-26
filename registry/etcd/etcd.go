@@ -36,6 +36,7 @@ var _ registry.Registry = &etcdRegistry{}
 func NewRegistry(opts ...registry.Option) (registry.Registry, error) {
 	e := &etcdRegistry{
 		options: registry.Options{},
+		closeCh: make(chan struct{}),
 	}
 	err := configure(e, opts...)
 	if err != nil {
