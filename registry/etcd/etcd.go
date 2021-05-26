@@ -10,6 +10,7 @@ import (
 	"github.com/coreos/etcd/etcdserver/api/v3rpc/rpctypes"
 	"github.com/google/uuid"
 	"go.uber.org/zap"
+	"sync"
 
 	"net"
 	"strings"
@@ -22,10 +23,12 @@ var (
 )
 
 type etcdRegistry struct {
-	client  *clientv3.Client
-	options registry.Options
-	leaseId clientv3.LeaseID
-	node    registry.Node
+	client    *clientv3.Client
+	options   registry.Options
+	leaseId   clientv3.LeaseID
+	node      registry.Node
+	closeCh   chan struct{}
+	closeOnce sync.Once
 }
 
 var _ registry.Registry = &etcdRegistry{}
@@ -158,8 +161,12 @@ func (e *etcdRegistry) Register(ops ...registry.RegisterOption) error {
 		ticker := time.NewTicker(registerOptions.RegisterInterval)
 		defer ticker.Stop()
 		for {
-			<-ticker.C
-			e.doRegister(registerOptions)
+			select {
+			case <-ticker.C:
+				e.doRegister(registerOptions)
+			case <-e.closeCh:
+				return
+			}
 		}
 	}()
 
@@ -195,14 +202,15 @@ func (e *etcdRegistry) doRegister(opts registry.RegisterOptions) error {
 }
 
 func (e *etcdRegistry) Deregister() error {
+	e.closeOnce.Do(func() {
+		close(e.closeCh)
+	})
+
 	ctx, cancel := context.WithTimeout(context.Background(), e.options.Timeout)
 	defer cancel()
 
 	_, err := e.client.Delete(ctx, e.getPath())
-	if err != nil {
-		return err
-	}
-	return nil
+	return err
 }
 
 func (e *etcdRegistry) String() string {
