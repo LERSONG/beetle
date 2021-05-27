@@ -2,7 +2,7 @@ package etcd
 
 import (
 	"context"
-	"github.com/LERSONG/beetle/registry"
+	"github.com/yametech/beetle/registry"
 
 	"go.uber.org/zap"
 )

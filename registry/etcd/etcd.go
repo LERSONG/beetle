@@ -4,11 +4,11 @@ import (
 	"context"
 	"crypto/tls"
 	"fmt"
-	"github.com/LERSONG/beetle/registry"
-	"github.com/LERSONG/beetle/util/addr"
 	"github.com/coreos/etcd/clientv3"
 	"github.com/coreos/etcd/etcdserver/api/v3rpc/rpctypes"
 	"github.com/google/uuid"
+	"github.com/yametech/beetle/registry"
+	"github.com/yametech/beetle/util/addr"
 	"go.uber.org/zap"
 	"sync"
 

@@ -3,9 +3,9 @@ package etcd
 import (
 	"context"
 	"fmt"
-	"github.com/LERSONG/beetle/registry"
-	"github.com/LERSONG/beetle/util/addr"
 	"github.com/coreos/etcd/clientv3"
+	"github.com/yametech/beetle/registry"
+	"github.com/yametech/beetle/util/addr"
 	"os"
 	"testing"
 )

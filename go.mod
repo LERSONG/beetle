@@ -1,4 +1,4 @@
-module github.com/LERSONG/beetle
+module github.com/yametech/beetle
 
 go 1.14
 
